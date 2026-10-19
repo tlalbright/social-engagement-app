@@ -250,7 +250,16 @@ def enrich_contacts_batch(
                 except Exception as inner:
                     _mark_batch_none(batch, all_enriched, str(inner), progress_callback, batch_idx, total_batches)
             else:
-                _mark_batch_none(batch, all_enriched, str(exc), progress_callback, batch_idx, total_batches)
+                # Log full ZoomInfo error body so we can diagnose 400s
+                body = ""
+                if exc.response is not None:
+                    try:
+                        body = exc.response.json().get("message", exc.response.text[:400])
+                    except Exception:
+                        body = exc.response.text[:400]
+                detail = f"{exc} — ZoomInfo says: {body}"
+                print(f"[ZI] HTTP error: {detail}")
+                _mark_batch_none(batch, all_enriched, detail, progress_callback, batch_idx, total_batches)
 
         except Exception as exc:
             _mark_batch_none(batch, all_enriched, str(exc), progress_callback, batch_idx, total_batches)
