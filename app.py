@@ -235,7 +235,7 @@ def run_new_processing(uploaded_files, output_dir: str, cfg: dict, dry_run: bool
 
             # ── Phase 2.3: Salesforce fallback for missing emails ───────────
             sf_cfg = cfg.get("salesforce", {})
-            if sf_cfg.get("client_id") and sf_cfg.get("username"):
+            if sf_cfg.get("username") and sf_cfg.get("password"):
                 missing_before = sum(1 for v in enriched.values() if not v)
                 st.write(f"**Phase 2.3 — Salesforce fallback ({missing_before} contacts still missing)…**")
                 prog_sf      = st.progress(0.0)
@@ -444,14 +444,14 @@ with st.sidebar:
         )
 
     sf_cfg_cur = cfg.get("salesforce", {})
-    sf_missing = not sf_cfg_cur.get("client_id")
+    sf_missing = not sf_cfg_cur.get("username")
     with st.expander("☁️ Salesforce (email fallback)", expanded=sf_missing):
         sf_user   = st.text_input("Username (email)", value=sf_cfg_cur.get("username", ""), key="sf_user")
         sf_pass   = st.text_input("Password",         value=sf_cfg_cur.get("password", ""), type="password", key="sf_pass")
         sf_token  = st.text_input("Security Token",   value=sf_cfg_cur.get("security_token", ""), type="password", key="sf_token",
-                                  help="Append to password or enter separately — from Salesforce → Settings → Reset My Security Token")
-        sf_cid    = st.text_input("Connected App Client ID",     value=sf_cfg_cur.get("client_id", ""), key="sf_cid")
-        sf_csec   = st.text_input("Connected App Client Secret", value=sf_cfg_cur.get("client_secret", ""), type="password", key="sf_csec")
+                                  help="Salesforce → Settings → Reset My Security Token")
+        sf_cid  = ""
+        sf_csec = ""
 
     if st.button("💾 Save Config", use_container_width=True):
         topics_list = [t.strip() for t in zi_topics_raw.splitlines() if t.strip()]
@@ -485,7 +485,7 @@ with st.sidebar:
     st.divider()
     zi_ok = bool(cfg["zoominfo"].get("username") and cfg["zoominfo"].get("password"))
     hs_ok = bool(cfg["hubspot"].get("service_key"))
-    sf_ok = bool(cfg.get("salesforce", {}).get("client_id") and cfg.get("salesforce", {}).get("username"))
+    sf_ok = bool(cfg.get("salesforce", {}).get("username") and cfg.get("salesforce", {}).get("password"))
     st.write("✅ ZoomInfo"   if zi_ok else "⚠️  ZoomInfo not configured")
     st.write("✅ HubSpot"    if hs_ok else "⚠️  HubSpot not configured")
     st.write("✅ Salesforce" if sf_ok else "ℹ️  Salesforce (optional)")
