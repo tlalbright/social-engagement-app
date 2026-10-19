@@ -129,10 +129,6 @@ def _enrich_batch(contacts: List[dict], token: str) -> Dict[str, Optional[str]]:
 
     payload = {
         "matchPersonInput": match_inputs,
-        "outputFields": [
-            "email", "companyName", "companyWebsite",
-            "companyCountry", "companyState", "employeeCount", "industry",
-        ],
     }
     headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
 
