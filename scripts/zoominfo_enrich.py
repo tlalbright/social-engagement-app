@@ -130,7 +130,7 @@ def _enrich_batch(contacts: List[dict], token: str) -> Dict[str, Optional[str]]:
     payload = {
         "matchPersonInput": match_inputs,
         "outputFields": [
-            "email", "firstName", "lastName", "phone",
+            "email", "firstName", "lastName",
             "companyName", "website", "country", "state",
             "employeeCount", "industry",
         ],
@@ -191,7 +191,7 @@ def _mark_batch_none(batch, enriched, error_msg, cb, batch_idx, total_batches):
     """Mark all contacts in a failed batch as no-match."""
     if cb:
         cb(
-            f"⚠️  Batch {batch_idx + 1} failed ({error_msg[:300]}) — marked as no-match.",
+            f"⚠️  Batch {batch_idx + 1} failed ({error_msg[:800]}) — marked as no-match.",
             batch_idx, total_batches,
         )
     for c in batch:
