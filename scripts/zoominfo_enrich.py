@@ -258,7 +258,7 @@ def enrich_contacts_batch(
                     except Exception:
                         body = exc.response.text[:400]
                 detail = f"{exc} — ZoomInfo says: {body}"
-                print(f"[ZI] HTTP error: {detail}")
+                print(f"[ZI] HTTP error: {detail}", flush=True)
                 _mark_batch_none(batch, all_enriched, detail, progress_callback, batch_idx, total_batches)
 
         except Exception as exc:
