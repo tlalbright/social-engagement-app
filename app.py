@@ -197,11 +197,14 @@ def run_new_processing(uploaded_files, output_dir: str, cfg: dict, dry_run: bool
             st.write("**Phase 2 — Enriching contacts via ZoomInfo…**")
             prog_bar  = st.progress(0.0)
             prog_text = st.empty()
+            zi_errors: list = []
 
             def _zi_cb(msg: str, done: int = 0, total: int = 0) -> None:
                 prog_text.caption(f"  {msg}")
                 if total > 0:
                     prog_bar.progress(min(done / total, 1.0))
+                if "failed" in msg.lower() or "⚠️" in msg:
+                    zi_errors.append(msg)
 
             try:
                 enriched = enrich_contacts_batch(
@@ -227,6 +230,10 @@ def run_new_processing(uploaded_files, output_dir: str, cfg: dict, dry_run: bool
                     f"  ✅ {found_emails}/{len(to_enrich)} emails found, "
                     f"{missing_count} missing"
                 )
+                if zi_errors:
+                    with st.expander(f"⚠️ {len(zi_errors)} ZoomInfo batch error(s) — click to expand", expanded=True):
+                        for e in zi_errors:
+                            st.caption(e)
 
             except Exception as exc:
                 status.update(label="❌ Failed at Phase 2", state="error")
