@@ -186,7 +186,7 @@ def _mark_batch_none(batch, enriched, error_msg, cb, batch_idx, total_batches):
     """Mark all contacts in a failed batch as no-match."""
     if cb:
         cb(
-            f"⚠️  Batch {batch_idx + 1} failed ({error_msg[:80]}) — marked as no-match.",
+            f"⚠️  Batch {batch_idx + 1} failed ({error_msg[:300]}) — marked as no-match.",
             batch_idx, total_batches,
         )
     for c in batch:
