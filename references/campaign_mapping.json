@@ -1,0 +1,66 @@
+{
+  "_notes": {
+    "filename_matching": "Matching checks exact → prefix → substring (longest key wins). Strip date suffix before matching.",
+    "author_matching": "For by_author entries, match is case-insensitive substring of the engmt1PostAuthor column (col Y).",
+    "_default": "Catch-all used when no specific author name matches in a by_author file type.",
+    "updating": "Edit campaign IDs here if Salesforce campaign IDs ever change."
+  },
+
+  "our-employees-post-engagers": {
+    "by_author": {
+      "Vadim":   "701Vq00000uNyJSIA0",
+      "Joseph":  "701Vq00000uO1UAIA0",
+      "Larry":   "701Vq00000uNiZhIAK",
+      "Bryan":   "701Vq00000uOJNqIAO",
+      "Matt":    "701Vq00000uNxTsIAK",
+      "Melanie": "701Vq00000uO8CJIA0",
+      "Scott":   "701Vq00000uNnvwIAC",
+      "_default": "701Vq00000uO8DyIAK"
+    }
+  },
+
+  "engagers-on-posts-mentioning-our-competitors": {
+    "campaign_id": "701Vq00000uNfvCIAS"
+  },
+
+  "track-posts-from-competitors-profiles": {
+    "campaign_id": "701Vq00000uOL34IAG"
+  },
+
+  "engagers-on-posts-mentioning-our-company": {
+    "campaign_id": "701Vq00000uOMFFIA4"
+  },
+
+  "our-company-page-post-engagers": {
+    "campaign_id": "701Vq00000uNUBlIAO"
+  },
+
+  "Limelight_Nerdio": {
+    "by_author": {
+      "Bryan":   "701Vq00000uOJNqIAO",
+      "Joseph":  "701Vq00000uO1UAIA0",
+      "Vadim":   "701Vq00000uNyJSIA0",
+      "Scott":   "701Vq00000uNnvwIAC",
+      "Melanie": "701Vq00000uO8CJIA0",
+      "Matt":    "701Vq00000uNxTsIAK",
+      "Larry":   "701Vq00000uNiZhIAK",
+      "_default": "701Vq00000uO8DyIAK"
+    }
+  },
+
+  "Limelight_CompMentions": {
+    "campaign_id": "701Vq00000uNfvCIAS"
+  },
+
+  "Limelight_CompPages": {
+    "campaign_id": "701Vq00000uOL34IAG"
+  },
+
+  "Limelight_NerdioPage": {
+    "campaign_id": "701Vq00000uNUBlIAO"
+  },
+
+  "Limelight_NerdioMentions": {
+    "campaign_id": "701Vq00000uOMFFIA4"
+  }
+}

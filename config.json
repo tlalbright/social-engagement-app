@@ -1,0 +1,13 @@
+{
+  "zoominfo": {
+    "username": "talbright@getnerdio.com",
+    "password": "Rileyismydog123!",
+    "client_id": ""
+  },
+  "hubspot": {
+    "service_key": "pat-na1-1ef0f602-2e73-44f1-80fe-ac688d7f711f",
+    "base_url": "https://api.hubapi.com",
+    "social_engagement_object_type": "2-61559614",
+    "association_type_id": 570
+  }
+}
