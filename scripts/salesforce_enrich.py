@@ -2,6 +2,9 @@
 Salesforce contact email lookup — fallback after ZoomInfo enrichment.
 For contacts where ZoomInfo found no email, searches Salesforce Contact records
 by first name + last name and returns the email if a match is found.
+
+Auth uses username + password + security_token only (no Connected App required).
+Security token: Salesforce → Settings → Reset My Security Token.
 """
 
 import requests
@@ -9,26 +12,47 @@ import time
 from typing import Callable, Dict, List, Optional
 
 
-SF_AUTH_URL = "https://login.salesforce.com/services/oauth2/token"
-SF_API_VER  = "v59.0"
+SF_SOAP_LOGIN_URL = "https://login.salesforce.com/services/Soap/u/59.0"
+SF_API_VER        = "v59.0"
 
 
 def get_sf_token(username: str, password: str, security_token: str,
-                 client_id: str, client_secret: str) -> tuple:
-    """Authenticate with Salesforce, return (access_token, instance_url)."""
-    payload = {
-        "grant_type":    "password",
-        "client_id":     client_id,
-        "client_secret": client_secret,
-        "username":      username,
-        "password":      password + security_token,
+                 client_id: str = "", client_secret: str = "") -> tuple:
+    """Authenticate with Salesforce via SOAP login. Returns (access_token, instance_url).
+    client_id and client_secret are accepted but ignored — not required."""
+    soap_body = f"""<?xml version="1.0" encoding="utf-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                  xmlns:urn="urn:partner.soap.sforce.com">
+  <soapenv:Body>
+    <urn:login>
+      <urn:username>{username}</urn:username>
+      <urn:password>{password}{security_token}</urn:password>
+    </urn:login>
+  </soapenv:Body>
+</soapenv:Envelope>"""
+    headers = {
+        "Content-Type": "text/xml; charset=UTF-8",
+        "SOAPAction":   "login",
     }
-    r = requests.post(SF_AUTH_URL, data=payload, timeout=30)
+    r = requests.post(SF_SOAP_LOGIN_URL, data=soap_body.encode("utf-8"),
+                      headers=headers, timeout=30)
     r.raise_for_status()
-    data = r.json()
-    if "access_token" not in data:
-        raise ValueError(f"No access_token in Salesforce auth response: {list(data.keys())}")
-    return data["access_token"], data["instance_url"]
+    text = r.text
+    # Parse token and server URL out of the SOAP response
+    def _extract(tag: str) -> str:
+        start = text.find(f"<{tag}>")
+        end   = text.find(f"</{tag}>")
+        if start == -1 or end == -1:
+            raise ValueError(f"Salesforce SOAP login: <{tag}> not found in response")
+        return text[start + len(tag) + 2 : end]
+
+    session_id  = _extract("sessionId")
+    server_url  = _extract("serverUrl")
+    # instance_url is the scheme+host of serverUrl
+    from urllib.parse import urlparse
+    parsed = urlparse(server_url)
+    instance_url = f"{parsed.scheme}://{parsed.netloc}"
+    return session_id, instance_url
 
 
 def _soql(query: str, token: str, instance_url: str) -> list:
