@@ -131,8 +131,7 @@ def _enrich_batch(contacts: List[dict], token: str) -> Dict[str, Optional[str]]:
         "matchPersonInput": match_inputs,
         "outputFields": [
             "email", "firstName", "lastName",
-            "companyName", "website", "country", "state",
-            "employeeCount", "industry",
+            "companyName", "country", "state",
         ],
     }
     headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
